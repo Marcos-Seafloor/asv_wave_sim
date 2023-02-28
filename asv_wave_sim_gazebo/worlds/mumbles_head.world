@@ -1,33 +1,12 @@
-<?xml version="1.0" ?>
-<!--
-  Copyright (C) 2019  Rhys Mainwaring
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-<sdf version="1.6">
-  <world name="mumbles_head_world">
-    
-    <!-- GUI -->
-    <gui>
+<sdf version='1.7'>
+  <world name='mumbles_head_world'>
+    <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>461.749 -104.948 19.9739 0 0.171456 3.04019</pose>
+        <pose>478.762 72.1501 25.7609 0 0.171456 3.04019</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
     </gui>
-
-    <!-- Scene -->
     <scene>
       <sky>
         <time>17</time>
@@ -38,32 +17,174 @@
           <direction>1.57079</direction>
         </clouds>
       </sky>
-      <grid>false</grid>
-      <origin_visual>false</origin_visual>
+      <grid>0</grid>
+      <origin_visual>0</origin_visual>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
     </scene>
-
-    <!-- Lights -->
-    <include>
-      <uri>model://sun</uri>
-    </include>
-
-    <!-- Coordinates  -->
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
     <spherical_coordinates>
-      <latitude_deg>-4.028765</latitude_deg>
-      <longitude_deg>51.5732315</longitude_deg>
+      <latitude_deg>-4.02876</latitude_deg>
+      <longitude_deg>51.5732</longitude_deg>
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
       <surface_model>EARTH_WGS84</surface_model>
     </spherical_coordinates>
-
-    <!-- World models  -->
-    <include>
-      <uri>model://mumbles_head</uri>
-    </include>
-
-    <include>
-      <uri>model://ocean_waves</uri>
-    </include>
-
+    <model name='mumbles_head'>
+      <static>1</static>
+      <link name='base_link'>
+        <collision name='base_collision'>
+          <pose>0 0 -10 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>1000 1000 1</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='base_visual'>
+          <geometry>
+            <heightmap>
+              <texture>
+                <diffuse>file://media/materials/textures/dirt_diffusespecular.png</diffuse>
+                <normal>file://media/materials/textures/flat_normal.png</normal>
+                <size>1</size>
+              </texture>
+              <texture>
+                <diffuse>file://media/materials/textures/grass_diffusespecular.png</diffuse>
+                <normal>file://media/materials/textures/flat_normal.png</normal>
+                <size>1</size>
+              </texture>
+              <texture>
+                <diffuse>file://media/materials/textures/fungus_diffusespecular.png</diffuse>
+                <normal>file://media/materials/textures/flat_normal.png</normal>
+                <size>1</size>
+              </texture>
+              <blend>
+                <min_height>2</min_height>
+                <fade_dist>5</fade_dist>
+              </blend>
+              <blend>
+                <min_height>4</min_height>
+                <fade_dist>5</fade_dist>
+              </blend>
+              <uri>model://mumbles_head/materials/textures/mumbles_head_513.png</uri>
+              <size>1000 1000 250</size>
+              <pos>0 0 -10</pos>
+            </heightmap>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <model name='ocean'>
+      <static>1</static>
+      <plugin name='ocean::wavefield_entity' filename='libWavefieldModelPlugin.so'>
+        <static>0</static>
+        <update_rate>30</update_rate>
+        <size>1000 1000</size>
+        <cell_count>50 50</cell_count>
+        <wave>
+          <number>3</number>
+          <scale>2.5</scale>
+          <angle>0.3</angle>
+          <steepness>1.0</steepness>
+          <amplitude>1.0</amplitude>
+          <period>8.0</period>
+          <direction>1 1</direction>
+        </wave>
+        <markers>
+          <wave_patch>0</wave_patch>
+          <wave_patch_size>4 4</wave_patch_size>
+        </markers>
+      </plugin>
+      <link name='ocean_link'>
+        <visual name='ocean_visual'>
+          <plugin name='ocean_plugin' filename='libOceanVisualPlugin.so'/>
+          <geometry>
+            <empty/>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://ocean/materials/scripts/water.material</uri>
+              <name>Water/Water</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <wind/>
+    <state world_name='mumbles_head_world'>
+      <sim_time>326 929000000</sim_time>
+      <real_time>63 771005322</real_time>
+      <wall_time>1677621084 667292107</wall_time>
+      <iterations>62347</iterations>
+      <model name='mumbles_head'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='base_link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ocean'>
+        <pose>115.797 20.079 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='ocean_link'>
+          <pose>115.797 20.079 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
   </world>
 </sdf>
