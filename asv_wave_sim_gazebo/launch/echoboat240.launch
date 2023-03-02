@@ -39,7 +39,7 @@
   </include>
 
   <node name="spawn_robot_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-        args="-x 350 -y -100 -z 10 -Y 90 -urdf -param robot_description -model echoboat240" />
+        args="-x 350 -y 50 -z 1 -Y 90 -urdf -param robot_description -model echoboat240" />
 
   <!-- RViz -->
   <arg name="rviz" default="false"/>

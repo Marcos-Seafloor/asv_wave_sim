@@ -10,7 +10,7 @@
   <arg name="recording" default="false"/>
   <arg name="debug" default="false"/>
   <arg name="verbose" default="false"/>
-  <arg name="robot_urdf" default="$(find hydrocat180_description)/description/hydrocat180.urdf.xacro"/>
+  <arg name="robot_urdf" default="$(find hydrocat180_description)/description/hydrocat180-workshop.urdf.xacro"/>
   <arg name="zed2_x" default="0.000"/>
   <arg name="zed2_y" default="0.00"/>
   <arg name="zed2_z" default="0.0032"/>
